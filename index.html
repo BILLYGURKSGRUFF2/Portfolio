@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="William Gurney — Dreamer. Founder. 16 years old.">
+  <title>William Gurney</title>
+
+  <!-- Favicon: "WG" in Cormorant-style serif, inline SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Georgia%2C serif' font-size='17' font-weight='400' fill='%23fff' text-anchor='middle' letter-spacing='-0.5'%3EWG%3C/text%3E%3C/svg%3E">
+
+  <!-- OG / Google search result image -->
+  <meta property="og:title" content="William Gurney">
+  <meta property="og:description" content="Dreamer. Founder. 16 years old.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23000'/%3E%3Ctext x='600' y='360' font-family='Georgia%2C serif' font-size='220' font-weight='400' fill='%23fff' text-anchor='middle' letter-spacing='-5'%3EWG%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      background: #fff;
+      color: #000;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { background: none; border: none; cursor: pointer; font: inherit; color: inherit; }
+    h1, h2, h3 { font-weight: inherit; }
+
+    /* ── ROLL ANIMATION ────────────────────────────────────── */
+    /*
+      --rpad adds bottom padding so descenders (j, g, y…) aren't clipped.
+      Both spans travel calc(100% + --rpad) so they stay perfectly in sync.
+    */
+    .roll {
+      --rpad: 0.15em;
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      position: relative;
+      padding-bottom: var(--rpad);
+    }
+    .roll > span:first-child {
+      display: block;
+      transition: transform 0.42s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .roll > span:last-child {
+      position: absolute;
+      top: 0; left: 0;
+      white-space: nowrap;
+      transform: translateY(calc(100% + var(--rpad)));
+      transition: transform 0.42s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .r:hover .roll > span:first-child { transform: translateY(calc(-100% - var(--rpad))); }
+    .r:hover .roll > span:last-child  { transform: translateY(0); }
+
+    /* ── HEADER ────────────────────────────────────────────── */
+    #site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      /* No color transition — handled in JS for precise timing */
+    }
+    #site-header.inverted { color: #fff; }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+    }
+
+    #menu-btn {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.25rem 0;
+      line-height: 1;
+    }
+
+    /* ── MENU OVERLAY ──────────────────────────────────────── */
+    #menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 3rem 4rem;
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+      pointer-events: none;
+    }
+    #menu-overlay.open {
+      clip-path: inset(0 0 0% 0);
+      pointer-events: all;
+    }
+
+    .menu-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .menu-nav a {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(3.5rem, 9vw, 9rem);
+      color: #fff;
+      line-height: 1;
+      display: block;
+      padding: 0.15em 0;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    #menu-overlay.open .menu-nav a {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #menu-overlay.open .menu-nav a:nth-child(1) { transition-delay: 0.22s; }
+    #menu-overlay.open .menu-nav a:nth-child(2) { transition-delay: 0.30s; }
+    #menu-overlay.open .menu-nav a:nth-child(3) { transition-delay: 0.38s; }
+    #menu-overlay.open .menu-nav a:nth-child(4) { transition-delay: 0.46s; }
+
+    .menu-footer {
+      margin-top: auto;
+      display: flex;
+      gap: 2rem;
+      padding-top: 3rem;
+    }
+    .menu-footer a {
+      color: #555;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.4s ease 0s, color 0.2s ease;
+    }
+    .menu-footer a:hover { color: #fff; }
+    #menu-overlay.open .menu-footer a {
+      opacity: 1;
+      transition-delay: 0.52s;
+    }
+
+    /* ── HERO ──────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 3rem 3rem 5rem;
+    }
+
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(4rem, 15.5vw, 16.5rem);
+      line-height: 0.87;
+      letter-spacing: -0.025em;
+      margin-bottom: 2.5rem;
+    }
+    .hero-name .line { display: block; }
+    .hero-name .line-italic { font-style: italic; }
+
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1rem, 2.2vw, 1.9rem);
+      color: #999;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── SCROLL FADE ───────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── SECTION SHARED ────────────────────────────────────── */
+    section:not(#hero) {
+      padding: 7rem 3rem;
+      border-top: 1px solid #000;
+    }
+
+    .s-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      column-gap: 5rem;
+    }
+
+    .s-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: #aaa;
+      padding-top: 0.5rem;
+    }
+
+    /* ── ABOUT ─────────────────────────────────────────────── */
+    .about-text {
+      font-size: clamp(0.95rem, 1.35vw, 1.18rem);
+      font-weight: 300;
+      line-height: 1.9;
+      color: #222;
+      max-width: 580px;
+    }
+
+    /* ── PROJECTS ──────────────────────────────────────────── */
+    .project-list { width: 100%; }
+
+    .project-row {
+      padding: 2rem 0;
+      border-top: 1px solid #e8e8e8;
+    }
+    .project-row:last-child { border-bottom: 1px solid #e8e8e8; }
+
+    .project-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .proj-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+      line-height: 1.1;
+    }
+
+    .proj-arrow {
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+      display: inline-block;
+      transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .proj-link-btn:hover .proj-arrow {
+      transform: translate(3px, -3px);
+    }
+    .proj-link-btn {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .project-bottom {
+      display: flex;
+      gap: 1rem;
+      align-items: baseline;
+    }
+
+    .proj-year {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: #bbb;
+      flex-shrink: 0;
+    }
+
+    .proj-sep { color: #ddd; font-size: 0.75rem; }
+
+    .proj-desc {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #666;
+      line-height: 1.65;
+    }
+
+    /* ── CONTACT ───────────────────────────────────────────── */
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .contact-links a {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(1.6rem, 3.2vw, 3.2rem);
+      line-height: 1.2;
+      display: inline-block;
+      position: relative;
+    }
+    .contact-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #000;
+      transition: width 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .contact-links a:hover::after { width: 100%; }
+
+    /* ── TIMELINE ──────────────────────────────────────────── */
+    .tl-list { width: 100%; }
+
+    .tl-row {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 2rem;
+      padding: 1.2rem 0;
+      border-top: 1px solid #e8e8e8;
+      align-items: baseline;
+    }
+    .tl-row:last-child { border-bottom: 1px solid #e8e8e8; }
+
+    .tl-year {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: #bbb;
+      padding-top: 0.15rem;
+    }
+
+    .tl-entry {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: clamp(1rem, 1.8vw, 1.4rem);
+      line-height: 1.2;
+    }
+
+    /* ── MARQUEE ────────────────────────────────────────────── */
+    .marquee-wrap {
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 1rem 0;
+    }
+    .marquee-track {
+      display: inline-flex;
+      animation: marquee 18s linear infinite;
+    }
+    .marquee-wrap:hover .marquee-track {
+      animation-play-state: paused;
+    }
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding-right: 1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(1.8rem, 4vw, 3.5rem);
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .marquee-item em { font-style: italic; }
+    .marquee-dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #000;
+      flex-shrink: 0;
+      margin-bottom: 0.1em;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── FOOTER ────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid #e8e8e8;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer span {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #ccc;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .s-grid { column-gap: 3rem; grid-template-columns: 120px 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      #site-header { padding: 1.5rem; }
+
+      #hero { padding: 5rem 1.5rem 3.5rem; }
+
+      section:not(#hero) { padding: 4rem 1.5rem; }
+
+      .s-grid {
+        grid-template-columns: 1fr;
+        row-gap: 1.75rem;
+      }
+
+      .project-top { gap: 1rem; }
+
+      footer { padding: 1.5rem; flex-direction: column; gap: 0.35rem; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      #menu-overlay { padding: 5rem 1.5rem 3rem; }
+      .menu-footer { gap: 1.5rem; }
+      .project-bottom { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── MENU OVERLAY ──────────────────────────────────── -->
+  <div id="menu-overlay" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <nav class="menu-nav">
+      <a href="#about" class="r" id="menu-about">
+        <span class="roll"><span>About</span><span>About</span></span>
+      </a>
+      <a href="#projects" class="r" id="menu-projects">
+        <span class="roll"><span>Projects</span><span>Projects</span></span>
+      </a>
+      <a href="#timeline" class="r" id="menu-timeline">
+        <span class="roll"><span>Timeline</span><span>Timeline</span></span>
+      </a>
+      <a href="#contact" class="r" id="menu-contact">
+        <span class="roll"><span>Contact</span><span>Contact</span></span>
+      </a>
+    </nav>
+    <div class="menu-footer">
+      <a href="mailto:contactwilliamgurney@gmail.com" class="r">
+        <span class="roll"><span>Email</span><span>Email</span></span>
+      </a>
+      <a href="https://x.com/WilliamGurneyJr" target="_blank" rel="noopener" class="r">
+        <span class="roll"><span>X / Twitter</span><span>X / Twitter</span></span>
+      </a>
+      <a href="https://www.youtube.com/@BusinessWithWilliam" target="_blank" rel="noopener" class="r">
+        <span class="roll"><span>YouTube</span><span>YouTube</span></span>
+      </a>
+      <a href="https://www.linkedin.com/in/william-gurney-098a35371/" target="_blank" rel="noopener" class="r">
+        <span class="roll"><span>LinkedIn</span><span>LinkedIn</span></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ─── HEADER ────────────────────────────────────────── -->
+  <header id="site-header">
+    <a href="#hero" class="logo r" aria-label="Home">
+      <span class="roll"><span>WG</span><span>WG</span></span>
+    </a>
+    <button id="menu-btn" class="r" aria-label="Toggle menu" aria-expanded="false">
+      <span class="roll" id="btn-roll"><span>Menu</span><span>Menu</span></span>
+    </button>
+  </header>
+
+  <main>
+
+    <!-- ─── HERO ──────────────────────────────────────────── -->
+    <section id="hero" aria-label="Introduction">
+      <h1 class="hero-name">
+        <span class="line fade-up">William</span>
+        <span class="line line-italic fade-up" style="transition-delay:.12s">Gurney</span>
+      </h1>
+      <p class="hero-sub fade-up" style="transition-delay:.24s">Dreamer. Founder. 16 years old.</p>
+    </section>
+
+    <!-- ─── MARQUEE ──────────────────────────────────────────── -->
+    <div class="marquee-wrap" aria-hidden="true">
+      <div class="marquee-track">
+        <!-- Repeated twice for seamless loop -->
+        <span class="marquee-item">William Gurney <span class="marquee-dot"></span> <em>Dreamer</em> <span class="marquee-dot"></span> Founder <span class="marquee-dot"></span> <em>Virginia</em> <span class="marquee-dot"></span> 16 Years Old <span class="marquee-dot"></span> <em>Builder</em> <span class="marquee-dot"></span> AI <span class="marquee-dot"></span> <em>Apps</em> <span class="marquee-dot"></span> iOS <span class="marquee-dot"></span> <em>Entrepreneur</em> <span class="marquee-dot"></span></span>
+        <span class="marquee-item">William Gurney <span class="marquee-dot"></span> <em>Dreamer</em> <span class="marquee-dot"></span> Founder <span class="marquee-dot"></span> <em>Virginia</em> <span class="marquee-dot"></span> 16 Years Old <span class="marquee-dot"></span> <em>Builder</em> <span class="marquee-dot"></span> AI <span class="marquee-dot"></span> <em>Apps</em> <span class="marquee-dot"></span> iOS <span class="marquee-dot"></span> <em>Entrepreneur</em> <span class="marquee-dot"></span></span>
+      </div>
+    </div>
+
+    <!-- ─── ABOUT ─────────────────────────────────────────── -->
+    <section id="about">
+      <div class="s-grid">
+        <span class="s-label fade-up">About</span>
+        <p class="about-text fade-up" style="transition-delay:.1s">
+          Self-taught builder from Virginia. I've been building AI systems and apps since I was 15. Currently working on Lyfted, an AI mental health journaling app, and Liar! — a multiplayer party game live on the App Store. My goal is financial independence without college.
+        </p>
+      </div>
+    </section>
+
+    <!-- ─── PROJECTS ──────────────────────────────────────── -->
+    <section id="projects">
+      <div class="s-grid">
+        <span class="s-label fade-up">Projects</span>
+        <div class="project-list">
+
+          <div class="project-row">
+            <div class="project-top">
+              <h2 class="proj-name">Liar! Imposter Party Game</h2>
+              <a href="https://apps.apple.com/us/app/liar-imposter-party-game/id6758251319" class="proj-link-btn r" target="_blank" rel="noopener" aria-label="View Liar! on the App Store">
+                <span class="proj-arrow">↗</span>
+              </a>
+            </div>
+            <div class="project-bottom">
+              <span class="proj-year">2026</span>
+              <span class="proj-sep">—</span>
+              <span class="proj-desc">Real-time multiplayer iOS game. Players join via party code over a call. Live on the App Store.</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-top">
+              <h2 class="proj-name">Lyfted</h2>
+              <a href="https://lyfted.health" class="proj-link-btn r" target="_blank" rel="noopener" aria-label="Visit lyfted.health">
+                <span class="proj-arrow">↗</span>
+              </a>
+            </div>
+            <div class="project-bottom">
+              <span class="proj-year">2026</span>
+              <span class="proj-sep">—</span>
+              <span class="proj-desc">AI mental health journaling app. Analyzes entries, spots trends, delivers personalized milestones.</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-top">
+              <h2 class="proj-name">Xinc Media</h2>
+            </div>
+            <div class="project-bottom">
+              <span class="proj-year">2025</span>
+              <span class="proj-sep">—</span>
+              <span class="proj-desc">Social media marketing agency. Built and ran the operation from the ground up, summer 2025.</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-top">
+              <h2 class="proj-name">Online Video Making Agency</h2>
+            </div>
+            <div class="project-bottom">
+              <span class="proj-year">2025</span>
+              <span class="proj-sep">—</span>
+              <span class="proj-desc">Holiday season video production agency. Launched and operated over Christmas 2025.</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-top">
+              <h2 class="proj-name">Billy AI</h2>
+            </div>
+            <div class="project-bottom">
+              <span class="proj-year">2025</span>
+              <span class="proj-sep">—</span>
+              <span class="proj-desc">AI assistant that lived at the bottom of your screen. Could execute tasks and update its own codebase. Got a lot of traction on X.</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-top">
+              <h2 class="proj-name">Outbound AI Calling Agent</h2>
+            </div>
+            <div class="project-bottom">
+              <span class="proj-year">2025</span>
+              <span class="proj-sep">—</span>
+              <span class="proj-desc">GPT-4o + Twilio calling agent built for a real business. Automated pre-auth calls and data collection.</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-top">
+              <h2 class="proj-name">Rizzly Bot</h2>
+            </div>
+            <div class="project-bottom">
+              <span class="proj-year">2025</span>
+              <span class="proj-sep">—</span>
+              <span class="proj-desc">Side project. Early 2025.</span>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-top">
+              <h2 class="proj-name">Billy Bot</h2>
+            </div>
+            <div class="project-bottom">
+              <span class="proj-year">2025</span>
+              <span class="proj-sep">—</span>
+              <span class="proj-desc">Offline AI on Raspberry Pi 5. Custom 3D printed case, wake word activated, zero cloud dependency.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TIMELINE ───────────────────────────────────────── -->
+    <section id="timeline">
+      <div class="s-grid">
+        <span class="s-label fade-up">Timeline</span>
+        <div class="tl-list">
+
+          <div class="tl-row">
+            <span class="tl-year">2026</span>
+            <span class="tl-entry">High School JV Soccer Team Captain</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">2025</span>
+            <span class="tl-entry">Regionals Science Fair Winner</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">2025</span>
+            <span class="tl-entry">Hired my first team</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">2025</span>
+            <span class="tl-entry">Traveled the world — Rome, England, Paris, Canada</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">2025</span>
+            <span class="tl-entry">International Club Member</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">2024</span>
+            <span class="tl-entry">JV Golf Team</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">2023</span>
+            <span class="tl-entry">Soccer Team Captain — Spring season</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">2013–25</span>
+            <span class="tl-entry">Competitive Swimmer</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">Ongoing</span>
+            <span class="tl-entry">Lifeguard &amp; Soccer Referee</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">Ongoing</span>
+            <span class="tl-entry">Big Brother of 3</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">Past</span>
+            <span class="tl-entry">Scout</span>
+          </div>
+
+          <div class="tl-row">
+            <span class="tl-year">Ongoing</span>
+            <span class="tl-entry">Gamer</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CONTACT ────────────────────────────────────────── -->
+    <section id="contact">
+      <div class="s-grid">
+        <span class="s-label fade-up">Contact</span>
+        <div class="contact-links fade-up" style="transition-delay:.1s">
+          <a href="mailto:contactwilliamgurney@gmail.com">
+            contactwilliamgurney@gmail.com
+          </a>
+          <a href="https://x.com/WilliamGurneyJr" target="_blank" rel="noopener">
+            @WilliamGurneyJr
+          </a>
+          <a href="https://www.youtube.com/@BusinessWithWilliam" target="_blank" rel="noopener">
+            YouTube
+          </a>
+          <a href="https://www.linkedin.com/in/william-gurney-098a35371/" target="_blank" rel="noopener">
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>© 2026 William Gurney</span>
+    <span>Virginia</span>
+  </footer>
+
+  <script>
+    // ── MENU ──────────────────────────────────────────────────
+    const overlay  = document.getElementById('menu-overlay');
+    const header   = document.getElementById('site-header');
+    const menuBtn  = document.getElementById('menu-btn');
+    const btnRoll  = document.getElementById('btn-roll');
+    let isOpen = false;
+
+    function setBtnText(t) {
+      btnRoll.innerHTML = `<span>${t}</span><span>${t}</span>`;
+    }
+
+    function openMenu() {
+      isOpen = true;
+      // Invert header BEFORE overlay starts so WG is never black-on-black
+      header.classList.add('inverted');
+      overlay.classList.add('open');
+      menuBtn.setAttribute('aria-expanded', 'true');
+      setBtnText('Close');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      isOpen = false;
+      overlay.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      setBtnText('Menu');
+      document.body.style.overflow = '';
+      // Overlay retreats bottom-up, so the header stays covered until ~750ms.
+      // Wait until it's fully gone before flipping text back to black.
+      setTimeout(() => header.classList.remove('inverted'), 760);
+    }
+
+    menuBtn.addEventListener('click', () => isOpen ? closeMenu() : openMenu());
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && isOpen) closeMenu();
+    });
+
+    overlay.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // ── SCROLL FADE-IN ────────────────────────────────────────
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    // Static fade-up elements
+    document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+    // Stagger project rows
+    document.querySelectorAll('.project-row').forEach((row, i) => {
+      row.classList.add('fade-up');
+      row.style.transitionDelay = `${i * 0.07}s`;
+      io.observe(row);
+    });
+
+    // Stagger timeline rows
+    document.querySelectorAll('.tl-row').forEach((row, i) => {
+      row.classList.add('fade-up');
+      row.style.transitionDelay = `${i * 0.06}s`;
+      io.observe(row);
+    });
+  </script>
+
+</body>
+</html>
