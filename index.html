@@ -21,7 +21,7 @@
   <style>
     /* ── RESET ─────────────────────────────────────────────── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    html { -webkit-font-smoothing: antialiased; }
     body {
       background: #fff;
       color: #000;
@@ -701,7 +701,13 @@
     <span>Virginia</span>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
   <script>
+    // ── LENIS SMOOTH SCROLL ───────────────────────────────────
+    const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
     // ── MENU ──────────────────────────────────────────────────
     const overlay  = document.getElementById('menu-overlay');
     const header   = document.getElementById('site-header');
@@ -720,7 +726,7 @@
       overlay.classList.add('open');
       menuBtn.setAttribute('aria-expanded', 'true');
       setBtnText('Close');
-      document.body.style.overflow = 'hidden';
+      lenis.stop();
     }
 
     function closeMenu() {
@@ -728,7 +734,7 @@
       overlay.classList.remove('open');
       menuBtn.setAttribute('aria-expanded', 'false');
       setBtnText('Menu');
-      document.body.style.overflow = '';
+      lenis.start();
       // Overlay retreats bottom-up, so the header stays covered until ~750ms.
       // Wait until it's fully gone before flipping text back to black.
       setTimeout(() => header.classList.remove('inverted'), 760);
@@ -740,8 +746,25 @@
       if (e.key === 'Escape' && isOpen) closeMenu();
     });
 
-    overlay.querySelectorAll('a').forEach(link => {
+    // Internal anchor links — close menu then smooth-scroll via Lenis
+    overlay.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = link.getAttribute('href');
+        closeMenu();
+        setTimeout(() => lenis.scrollTo(target, { duration: 1.4 }), 80);
+      });
+    });
+
+    // External / mailto links in menu — just close
+    overlay.querySelectorAll('a:not([href^="#"])').forEach(link => {
       link.addEventListener('click', closeMenu);
+    });
+
+    // Header logo smooth-scroll to top
+    document.querySelector('.logo').addEventListener('click', e => {
+      e.preventDefault();
+      lenis.scrollTo(0, { duration: 1.4 });
     });
 
     // ── SCROLL FADE-IN ────────────────────────────────────────
