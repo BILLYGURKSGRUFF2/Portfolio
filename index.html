@@ -339,6 +339,54 @@
       line-height: 1.2;
     }
 
+    /* ── FAQ ───────────────────────────────────────────────── */
+    .faq-list { width: 100%; }
+
+    .faq-row {
+      border-top: 1px solid #e8e8e8;
+    }
+    .faq-row:last-child { border-bottom: 1px solid #e8e8e8; }
+
+    .faq-row summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 1.4rem 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: clamp(1rem, 1.7vw, 1.35rem);
+      line-height: 1.25;
+    }
+    .faq-row summary::-webkit-details-marker { display: none; }
+    .faq-row summary::marker { display: none; }
+
+    .faq-indicator {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: #bbb;
+      flex-shrink: 0;
+      line-height: 1;
+      transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1),
+                  color 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .faq-row[open] .faq-indicator {
+      transform: rotate(45deg);
+      color: #000;
+    }
+
+    .faq-answer {
+      font-size: 0.92rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: #555;
+      max-width: 600px;
+      padding-bottom: 1.6rem;
+    }
+
     /* ── MARQUEE ────────────────────────────────────────────── */
     .marquee-wrap {
       border-top: 1px solid #000;
@@ -438,6 +486,9 @@
       </a>
       <a href="#timeline" class="r" id="menu-timeline">
         <span class="roll"><span>Timeline</span><span>Timeline</span></span>
+      </a>
+      <a href="#faq" class="r" id="menu-faq">
+        <span class="roll"><span>FAQ</span><span>FAQ</span></span>
       </a>
       <a href="#contact" class="r" id="menu-contact">
         <span class="roll"><span>Contact</span><span>Contact</span></span>
@@ -645,6 +696,128 @@
       </div>
     </section>
 
+    <!-- ─── FAQ ────────────────────────────────────────────── -->
+    <section id="faq">
+      <div class="s-grid">
+        <span class="s-label fade-up">FAQ</span>
+        <div class="faq-list">
+
+          <details class="faq-row">
+            <summary>
+              <span>Why aren't you going to college?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">I'd rather get my products into the world than work for someone else. The freedom to chase my own passions matters more to me than a degree — and I believe I can learn anything without one. The student debt math doesn't help college's case either.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>How did you learn to code?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Completely self-taught. I took some Python classes my freshman year, but they didn't translate to building mobile apps. Today I lean heavily on AI to build and scale my projects.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>When did you start building?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Middle school. My first projects were things like an unblocked games site that pulled serious daily traffic, and Billy Bot — an offline Raspberry Pi AI with a custom 3D-printed case. Won First Place at Regionals Science Fair, and Most Inspirational in 8th grade. I've been shipping since I realized I could.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>What's your stack?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">SwiftUI for iOS. Supabase for backend, auth, and database. RevenueCat for subscriptions. AI APIs for processing. Claude Code for development. I stay on free or low-cost tiers across everything and move fast.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>Are you open to work or collaborations?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Depends. I'm heads-down on my own projects and that's the priority. If something adds real value without becoming a distraction, I'll hear it.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>How can I hire you or work with you?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Reach out and make a real case for why it's a fit. I'm 16, in school, and running my own products — I'm selective.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>What's the stealth project you keep mentioning?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Staying private until launch. Ideas get stolen fast.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>Where are you based?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Roanoke, Virginia. Cave Spring High School, class of 2028.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>How do you balance school and building?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">I just build. School is there, I handle it, but my real focus is shipping products. Headphones in, lock in.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>How do your parents feel about this path?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Supportive. I'm not doing anything reckless — I'm building real products, making real money, and thinking long-term. Hard to argue with that.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>What advice would you give other young builders?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Ship something real. Not a tutorial project, not a clone — something you'd actually use or pay for. Learn by building, not by watching. And never give a developer backend access without reading the contract first.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>What's the goal — exit, lifestyle business, something else?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Financial independence first. I'm 16 and already moving toward real MRR. The goal is to build something that matters and either gets acquired or scales — not just to have a portfolio. I applied to YC Startup School. Long-term, I'm thinking big.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>How do you find ideas to build?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">I build things I'm annoyed don't exist, or that I'd pay for myself. If I'd use it and can't find it, that's the idea.</p>
+          </details>
+
+          <details class="faq-row">
+            <summary>
+              <span>What does a typical day look like?</span>
+              <span class="faq-indicator">+</span>
+            </summary>
+            <p class="faq-answer">Build, scale, dread school, repeat.</p>
+          </details>
+
+        </div>
+      </div>
+    </section>
+
     <!-- ─── CONTACT ────────────────────────────────────────── -->
     <section id="contact">
       <div class="s-grid">
@@ -763,6 +936,13 @@
     document.querySelectorAll('.tl-row').forEach((row, i) => {
       row.classList.add('fade-up');
       row.style.transitionDelay = `${i * 0.06}s`;
+      io.observe(row);
+    });
+
+    // Stagger FAQ rows
+    document.querySelectorAll('.faq-row').forEach((row, i) => {
+      row.classList.add('fade-up');
+      row.style.transitionDelay = `${i * 0.05}s`;
       io.observe(row);
     });
   </script>
